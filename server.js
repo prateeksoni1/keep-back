@@ -7,6 +7,7 @@ const session = require("express-session");
 const app = express();
 
 const authRouter = require("./routes/auth");
+const notesRouter = require("./routes/notes");
 
 app.use(bodyParser({ extended: true }));
 app.use(
@@ -26,6 +27,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRouter);
+app.use("/notes", notesRouter);
 
 mongoose
   .connect("mongodb://pro:abc123@ds163494.mlab.com:63494/todo-keep", {

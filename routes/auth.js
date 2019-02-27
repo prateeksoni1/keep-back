@@ -4,6 +4,14 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const passport = require("../passport");
 
+route.get("/user", (req, res) => {
+  console.log(req.user);
+  if (!req.user) {
+    return res.send({ success: false, user: null });
+  }
+  return res.send({ success: true, user: req.user });
+});
+
 route.post("/signup", (req, res) => {
   //   console.log(req.body);
   const name = req.body.fullName;
@@ -18,7 +26,7 @@ route.post("/signup", (req, res) => {
     password: hashedPassword
   })
     .then(user => {
-      console.log(user);
+      // console.log(user);
       res.send(user);
     })
     .catch(err => {
@@ -46,6 +54,20 @@ route.post("/login", (req, res, next) => {
       return res.send({ success: true, user: user });
     });
   })(req, res, next);
+});
+
+route.get("/logout", (req, res) => {
+  req.logOut();
+  req.session.destroy(function(err) {
+    if (!err) {
+      res
+        .status(200)
+        .clearCookie("connect.sid", { path: "/" })
+        .send({ loggedOut: true });
+    } else {
+      res.send({ loggedOut: false });
+    }
+  });
 });
 
 module.exports = route;
